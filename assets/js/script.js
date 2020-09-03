@@ -1,12 +1,17 @@
 var searchFormEl = document.querySelector("#search-form");
+var cityInputEl = document.querySelector("#city-input");
 var searchHistoryEl = document.querySelector("#search-history");
 
-var createSearchHistory = function(city) {
-    var search = document.createElement("a");
+var createSearchHistory = function(event) {
+    event.preventDefault();
 
-    search.textContent = city;
+    var pastSearch = document.createElement("a");
+    var city = cityInputEl.value.trim();
 
-    searchHistoryEl.appendChild(search);
+    pastSearch.textContent = city;
+    cityInputEl.value = "";
+
+    searchHistoryEl.appendChild(pastSearch);
 };
 
-createSearchHistory('houston');
+searchFormEl.addEventListener("submit", createSearchHistory);
