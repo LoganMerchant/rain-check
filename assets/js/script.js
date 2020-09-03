@@ -1,7 +1,53 @@
 var searchFormEl = document.querySelector("#search-form");
 var cityInputEl = document.querySelector("#city-input");
+var currentConditionsEl = document.querySelector("#current-conditions");
 var searchHistoryEl = document.querySelector("#search-history");
 var searchHistoryArr = [];
+
+var getCurrentConditions = function(city) {
+    var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=bbf3bd1040e46074ce9631e1da42c4dd"
+
+    fetch(apiUrl).then(function(response) {
+        response.json().then(function(data) {
+            displayCurrentConditions(data);
+        });
+    });
+};
+
+
+
+var displayCurrentConditions = function(data) {
+    console.log(data);
+    
+    currentConditionsEl.textContent = "";
+    var currentConditionsTitle = document.createElement("div");
+    var date = moment().format("ddd, MMMM Do, YYYY");
+    var cityName = data.name;
+    var weatherIcon = document.createElement("img");
+    weatherIcon.setAttribute("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png");
+
+    currentConditionsTitle.innerHTML = "<h3>" + cityName + "</h3><h4>" + date + "</h4>";
+    currentConditionsTitle.appendChild(weatherIcon);
+    currentConditionsEl.appendChild(currentConditionsTitle);
+
+    var currentConditionsStats = document.createElement("div");
+    var temperature = "Temperature: " + data.main.temp + "°F";
+    var humidity = "Humidity: " + data.main.humidity + "%";
+    var windSpeed = "Wind Speed: " + data.wind.speed + " mph";
+    var uvi = "";
+    var uviFunction = function(city) {
+        var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?lat=" + city.coord.lat + "&lon=" + city.coord.lon + "&appid=bbf3bd1040e46074ce9631e1da42c4dd";
+    
+        fetch(apiUrl).then(function(response) {
+            response.json().then(function(data) {
+                return (uvi.replace("", data.value));
+            });
+        });
+    };
+    uviFunction(data);
+    console.log(uvi);
+    
+};
 
 var saveSearch = function() {
     localStorage.setItem("cities", searchHistoryArr);
@@ -35,6 +81,8 @@ var createSearchHistory = function(event) {
     searchHistoryEl.appendChild(pastSearch);
 
     searchHistoryArr.push(city);
+
+    getCurrentConditions(city);
 
     saveSearch(city);
 };
