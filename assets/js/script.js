@@ -8,10 +8,21 @@ var createSearchHistory = function(event) {
     var pastSearch = document.createElement("a");
     var city = cityInputEl.value.trim();
 
+    pastSearch.setAttribute("data-city", city);
+
     pastSearch.textContent = city;
     cityInputEl.value = "";
 
     searchHistoryEl.appendChild(pastSearch);
 };
 
+var createPastSearch = function(event) {
+    var city = event.target.getAttribute("data-city");
+
+    if(city) {
+        getCurrentConditions(city);
+    };
+};
+
 searchFormEl.addEventListener("submit", createSearchHistory);
+searchHistoryEl.addEventListener("click", createPastSearch);
