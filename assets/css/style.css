@@ -6,3 +6,7 @@
     background-color: dodgerblue;
     color: white;
 }
+
+a {
+    display: block;
+}

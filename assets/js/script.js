@@ -1,6 +1,25 @@
 var searchFormEl = document.querySelector("#search-form");
 var cityInputEl = document.querySelector("#city-input");
 var searchHistoryEl = document.querySelector("#search-history");
+var searchHistoryArr = [];
+
+var saveSearch = function() {
+    localStorage.setItem("cities", searchHistoryArr);
+};
+
+var loadSearches = function() {
+    var cities = localStorage.getItem("cities").split(",");
+
+    for (var i = 0; i < cities.length; i++) {
+    var pastSearch = document.createElement("a");
+
+    pastSearch.setAttribute("data-city", cities[i]);
+
+    pastSearch.textContent = cities[i];
+
+    searchHistoryEl.appendChild(pastSearch);
+    };
+};
 
 var createSearchHistory = function(event) {
     event.preventDefault();
@@ -14,6 +33,10 @@ var createSearchHistory = function(event) {
     cityInputEl.value = "";
 
     searchHistoryEl.appendChild(pastSearch);
+
+    searchHistoryArr.push(city);
+
+    saveSearch(city);
 };
 
 var createPastSearch = function(event) {
@@ -26,3 +49,5 @@ var createPastSearch = function(event) {
 
 searchFormEl.addEventListener("submit", createSearchHistory);
 searchHistoryEl.addEventListener("click", createPastSearch);
+
+loadSearches();
