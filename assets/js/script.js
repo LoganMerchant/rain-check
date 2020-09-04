@@ -4,17 +4,27 @@ var currentConditionsEl = document.querySelector("#current-conditions");
 var searchHistoryEl = document.querySelector("#search-history");
 var searchHistoryArr = [];
 
+
 var getCurrentConditions = function(city) {
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=bbf3bd1040e46074ce9631e1da42c4dd"
 
     fetch(apiUrl).then(function(response) {
         response.json().then(function(data) {
+            getCurrentUvi(data);
             displayCurrentConditions(data);
         });
     });
 };
 
-
+var getCurrentUvi = function(city) {
+    var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?appid=bbf3bd1040e46074ce9631e1da42c4dd&lat=" + city.coord.lat + "&lon=" + city.coord.lon;
+    
+    fetch(apiUrl).then(function(response) {
+        response.json().then(function(data) {
+            displayCurrentUvi(data);
+        });
+    });
+};
 
 var displayCurrentConditions = function(data) {
     console.log(data);
@@ -33,20 +43,17 @@ var displayCurrentConditions = function(data) {
     var currentConditionsStats = document.createElement("div");
     var temperature = "Temperature: " + data.main.temp + "°F";
     var humidity = "Humidity: " + data.main.humidity + "%";
-    var windSpeed = "Wind Speed: " + data.wind.speed + " mph";
-    var uvi = "";
-    var uviFunction = function(city) {
-        var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?lat=" + city.coord.lat + "&lon=" + city.coord.lon + "&appid=bbf3bd1040e46074ce9631e1da42c4dd";
-    
-        fetch(apiUrl).then(function(response) {
-            response.json().then(function(data) {
-                return (uvi.replace("", data.value));
-            });
-        });
-    };
-    uviFunction(data);
-    console.log(uvi);
-    
+    var windSpeed = "Wind Speed: " + data.wind.speed + " mph";    
+};
+
+var displayCurrentUvi = function(data) {
+    console.log(data);
+    var uviContainer = document.createElement("div");
+    var uvi = document.createElement("h3");
+    uvi.textContent = data.value;
+
+    uviContainer.appendChild(uvi);
+    currentConditionsEl.appendChild(uviContainer);
 };
 
 var saveSearch = function() {
