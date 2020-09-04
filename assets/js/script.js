@@ -1,6 +1,7 @@
 var searchFormEl = document.querySelector("#search-form");
 var cityInputEl = document.querySelector("#city-input");
 var currentConditionsEl = document.querySelector("#current-conditions");
+var forecastEl = document.querySelector("#forecast");
 var searchHistoryEl = document.querySelector("#search-history");
 var searchHistoryArr = [];
 
@@ -28,8 +29,19 @@ var getCurrentConditions = function(city) {
     });
 };
 
+var getForecast = function(city) {
+    var apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&units=imperial&appid=bbf3bd1040e46074ce9631e1da42c4dd";
+
+    fetch(apiUrl)
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(data) {
+        displayForecast(data);
+    })
+};
+
 var displayCurrentConditions = function(data) {   
-    console.log(data);
     currentConditionsEl.textContent = "";
     var currentConditionsTitle = document.createElement("div");
     var date = moment().format("ddd, MMMM Do, YYYY");
@@ -59,18 +71,56 @@ var displayCurrentConditions = function(data) {
 };
 
 var displayCurrentUv = function(data) {
-    console.log(data);
-    uvi = document.createElement("p");
-    uvi.textContent = "UV Index: " + data.value;
+    var uvi = document.createElement("p");
+    var uviSpan = document.createElement("span");
+    uviSpan.textContent = data.value;
+    uvi.textContent = "UV Index: ";
+    uvi.appendChild(uviSpan);
+
     if (data.value <= 5) {
-        uvi.className = "bg-success";
+        uviSpan.className = "bg-success";
     } else if (data.value < 7) {
-        uvi.className = "bg-warning";
+        uviSpan.className = "bg-warning";
     } else {
-        uvi.className = "bg-danger";
+        uviSpan.className = "bg-danger";
     };
 
     currentConditionsEl.appendChild(uvi);
+};
+
+var displayForecast = function(data) {
+    console.log(data);
+    var desiredObject = 7;
+    for (var i = 0; i < 5; i++) {
+        var forecastCard = document.createElement("div");
+        forecastCard.classList = "card col-12 col-md-2 bg-primary mx-3";
+
+        var time = moment.unix(data.list[desiredObject].dt).format("ddd, MMMM Do, YYYY");
+        var weatherIcon = document.createElement("img");
+        weatherIcon.setAttribute("src", "https://openweathermap.org/img/wn/" + data.list[desiredObject].weather[0].icon + "@2x.png");
+        var temperature = data.list[desiredObject].main.temp;
+        var humidity = data.list[desiredObject].main.humidity;
+
+        forecastTitle = document.createElement('h4');
+        forecastTitle.className = "card-title";
+        forecastTitle.textContent = time;
+
+        forecastBodyEl = document.createElement('p');
+        forecastBodyEl.className = "card-text";
+        forecastBodyEl.innerHTML = "Temperature: " + temperature + "°F </br> Humidity: " + humidity + "%";
+
+        forecastCard.appendChild(forecastTitle);
+        forecastCard.appendChild(weatherIcon);
+        forecastCard.appendChild(forecastBodyEl);
+
+        forecastEl.appendChild(forecastCard);
+
+        console.log(time);
+        console.log(temperature);
+        console.log(humidity);
+
+        desiredObject = (desiredObject + 8);
+    };
 };
 
 var saveSearch = function() {
@@ -108,6 +158,8 @@ var createSearchHistory = function(event) {
 
     getCurrentConditions(city);
 
+    getForecast(city);
+
     saveSearch(city);
 };
 
@@ -116,6 +168,7 @@ var createPastSearch = function(event) {
 
     if(city) {
         getCurrentConditions(city);
+        getForecast(city);
     };
 };
 
