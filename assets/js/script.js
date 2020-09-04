@@ -28,9 +28,8 @@ var getCurrentConditions = function(city) {
     });
 };
 
-var displayCurrentConditions = function(data) {
+var displayCurrentConditions = function(data) {   
     console.log(data);
-    
     currentConditionsEl.textContent = "";
     var currentConditionsTitle = document.createElement("div");
     var date = moment().format("ddd, MMMM Do, YYYY");
@@ -38,7 +37,7 @@ var displayCurrentConditions = function(data) {
     var weatherIcon = document.createElement("img");
     weatherIcon.setAttribute("src", "http://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png");
 
-    currentConditionsTitle.innerHTML = "<h3>" + cityName + "</h3><h4>" + date + "</h4>";
+    currentConditionsTitle.innerHTML = "<h2>" + cityName + "</h2><h4>" + date + "</h4>";
     currentConditionsTitle.appendChild(weatherIcon);
     currentConditionsEl.appendChild(currentConditionsTitle);
 
@@ -61,6 +60,17 @@ var displayCurrentConditions = function(data) {
 
 var displayCurrentUv = function(data) {
     console.log(data);
+    uvi = document.createElement("p");
+    uvi.textContent = "UV Index: " + data.value;
+    if (data.value <= 5) {
+        uvi.className = "bg-success";
+    } else if (data.value < 7) {
+        uvi.className = "bg-warning";
+    } else {
+        uvi.className = "bg-danger";
+    };
+
+    currentConditionsEl.appendChild(uvi);
 };
 
 var saveSearch = function() {
