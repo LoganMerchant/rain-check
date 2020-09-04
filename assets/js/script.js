@@ -8,21 +8,23 @@ var searchHistoryArr = [];
 var getCurrentConditions = function(city) {
     var apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=bbf3bd1040e46074ce9631e1da42c4dd"
 
-    fetch(apiUrl).then(function(response) {
-        response.json().then(function(data) {
-            getCurrentUvi(data);
-            displayCurrentConditions(data);
-        });
-    });
-};
+    fetch(apiUrl)
+    .then(function(currentConditionsResponse) {
+        return currentConditionsResponse.json();
+    })
+    .then(function(currentConditionsResponse) {
+        uvUrl = "https://api.openweathermap.org/data/2.5/uvi?appid=bbf3bd1040e46074ce9631e1da42c4dd&lat="
+         + currentConditionsResponse.coord.lat + "&lon=" + currentConditionsResponse.coord.lon;
 
-var getCurrentUvi = function(city) {
-    var apiUrl = "https://api.openweathermap.org/data/2.5/uvi?appid=bbf3bd1040e46074ce9631e1da42c4dd&lat=" + city.coord.lat + "&lon=" + city.coord.lon;
-    
-    fetch(apiUrl).then(function(response) {
-        response.json().then(function(data) {
-            displayCurrentUvi(data);
-        });
+        displayCurrentConditions(currentConditionsResponse);
+        
+        return fetch(uvUrl);
+    })
+    .then(function(uvResponse) {
+        return uvResponse.json();
+    })
+    .then (function(uvResponse) {
+        displayCurrentUv(uvResponse);
     });
 };
 
@@ -41,19 +43,24 @@ var displayCurrentConditions = function(data) {
     currentConditionsEl.appendChild(currentConditionsTitle);
 
     var currentConditionsStats = document.createElement("div");
-    var temperature = "Temperature: " + data.main.temp + "°F";
-    var humidity = "Humidity: " + data.main.humidity + "%";
-    var windSpeed = "Wind Speed: " + data.wind.speed + " mph";    
+    var temperature = document.createElement("p")
+    temperature.textContent = "Temperature: " + data.main.temp + "°F";
+
+    var humidity = document.createElement("p")
+    humidity.textContent = "Humidity: " + data.main.humidity + "%";
+
+    var windSpeed = document.createElement("p")
+    windSpeed.textContent = "Wind Speed: " + data.wind.speed + " mph";    
+    
+    currentConditionsStats.appendChild(temperature);
+    currentConditionsStats.appendChild(humidity);
+    currentConditionsStats.appendChild(windSpeed);
+
+    currentConditionsEl.appendChild(currentConditionsStats);
 };
 
-var displayCurrentUvi = function(data) {
+var displayCurrentUv = function(data) {
     console.log(data);
-    var uviContainer = document.createElement("div");
-    var uvi = document.createElement("h3");
-    uvi.textContent = data.value;
-
-    uviContainer.appendChild(uvi);
-    currentConditionsEl.appendChild(uviContainer);
 };
 
 var saveSearch = function() {
