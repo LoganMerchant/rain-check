@@ -89,6 +89,7 @@ var displayCurrentUv = function(data) {
 };
 
 var displayForecast = function(data) {
+    forecastEl.textContent = "";
     console.log(data);
     var desiredObject = 7;
     for (var i = 0; i < 5; i++) {
