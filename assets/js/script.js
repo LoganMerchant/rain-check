@@ -90,8 +90,9 @@ var displayCurrentUv = function(data) {
 
 var displayForecast = function(data) {
     forecastEl.textContent = "";
-    var desiredObject = 7;
-    
+    var desiredObject = 6;
+    console.log(data);
+
     for (var i = 0; i < 5; i++) {
         var forecastCard = document.createElement("div");
         forecastCard.classList = "card col-12 col-md-2 bg-primary mx-3";
