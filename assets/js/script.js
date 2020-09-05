@@ -119,7 +119,9 @@ var displayForecast = function(data) {
 };
 
 var saveSearch = function(city) {
-    searchHistoryArr.push(city);
+    if (!searchHistoryArr.includes(city)) {
+        searchHistoryArr.push(city);
+    };
 
     localStorage.setItem("cities", searchHistoryArr);
 };
@@ -159,7 +161,7 @@ var createSearchHistory = function(event) {
 
         searchHistoryEl.appendChild(pastSearch);
     };
-    
+
     cityInputEl.value = "";
     getCurrentConditions(city);
     getForecast(city);
