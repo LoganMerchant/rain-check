@@ -90,8 +90,8 @@ var displayCurrentUv = function(data) {
 
 var displayForecast = function(data) {
     forecastEl.textContent = "";
-    console.log(data);
     var desiredObject = 7;
+    
     for (var i = 0; i < 5; i++) {
         var forecastCard = document.createElement("div");
         forecastCard.classList = "card col-12 col-md-2 bg-primary mx-3";
@@ -116,29 +116,37 @@ var displayForecast = function(data) {
 
         forecastEl.appendChild(forecastCard);
 
-        console.log(time);
-        console.log(temperature);
-        console.log(humidity);
-
         desiredObject = (desiredObject + 8);
     };
 };
 
-var saveSearch = function() {
+var saveSearch = function(city) {
+    if (!searchHistoryArr.includes(city)) {
+        searchHistoryArr.push(city);
+    };
+
     localStorage.setItem("cities", searchHistoryArr);
 };
 
 var loadSearches = function() {
-    var cities = localStorage.getItem("cities").split(",");
+    var returnedCities = localStorage.getItem("cities");
+    
+    if (returnedCities) {
+        returnedCities = returnedCities.split(",");
+    } else {
+        returnedCities = [];
+    };
 
-    for (var i = 0; i < cities.length; i++) {
+    for (var i = 0; i < returnedCities.length; i++) {
     var pastSearch = document.createElement("a");
 
-    pastSearch.setAttribute("data-city", cities[i]);
+    pastSearch.setAttribute("data-city", returnedCities[i]);
 
-    pastSearch.textContent = cities[i];
+    pastSearch.textContent = returnedCities[i];
 
     searchHistoryEl.appendChild(pastSearch);
+
+    searchHistoryArr.push(returnedCities[i]);
     };
 };
 
@@ -148,23 +156,21 @@ var createSearchHistory = function(event) {
     var pastSearch = document.createElement("a");
     var city = cityInputEl.value.trim();
 
-    pastSearch.setAttribute("data-city", city);
+    if (!searchHistoryArr.includes(city)) {
+        pastSearch.setAttribute("data-city", city);
 
-    pastSearch.textContent = city;
+        pastSearch.textContent = city;
+
+        searchHistoryEl.appendChild(pastSearch);
+    };
+
     cityInputEl.value = "";
-
-    searchHistoryEl.appendChild(pastSearch);
-
-    searchHistoryArr.push(city);
-
     getCurrentConditions(city);
-
     getForecast(city);
-
     saveSearch(city);
 };
 
-var createPastSearch = function(event) {
+var createPastSearchConditions = function(event) {
     var city = event.target.getAttribute("data-city");
 
     if(city) {
@@ -174,6 +180,6 @@ var createPastSearch = function(event) {
 };
 
 searchFormEl.addEventListener("submit", createSearchHistory);
-searchHistoryEl.addEventListener("click", createPastSearch);
+searchHistoryEl.addEventListener("click", createPastSearchConditions);
 
 loadSearches();
