@@ -144,6 +144,7 @@ var loadSearches = function() {
     pastSearch.setAttribute("data-city", returnedCities[i]);
 
     pastSearch.textContent = returnedCities[i].toUpperCase();
+    pastSearch.classList = "border-bottom border-secondary";
 
     searchHistoryEl.appendChild(pastSearch);
 
@@ -161,6 +162,7 @@ var createSearchHistory = function(event) {
         pastSearch.setAttribute("data-city", city);
 
         pastSearch.textContent = city.toUpperCase();
+        pastSearch.classList = "border-bottom border-secondary";
 
         searchHistoryEl.appendChild(pastSearch);
     };
