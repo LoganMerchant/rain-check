@@ -95,7 +95,7 @@ var displayForecast = function(data) {
 
     for (var i = 0; i < 5; i++) {
         var forecastCard = document.createElement("div");
-        forecastCard.classList = "card col-4 col-md-2 bg-primary mx-3 my-3";
+        forecastCard.classList = "card col-4 col-md-2 bg-primary m-3 ";
 
         var time = moment.unix(data.list[desiredObject].dt).format("ddd, MMMM Do, YYYY");
         var weatherIcon = document.createElement("img");
@@ -139,11 +139,11 @@ var loadSearches = function() {
     };
 
     for (var i = 0; i < returnedCities.length; i++) {
-    var pastSearch = document.createElement("a");
+    var pastSearch = document.createElement("h5");
 
     pastSearch.setAttribute("data-city", returnedCities[i]);
 
-    pastSearch.textContent = returnedCities[i];
+    pastSearch.textContent = returnedCities[i].toUpperCase();
 
     searchHistoryEl.appendChild(pastSearch);
 
@@ -153,14 +153,14 @@ var loadSearches = function() {
 
 var createSearchHistory = function(event) {
     event.preventDefault();
-
-    var pastSearch = document.createElement("a");
+    
+    var pastSearch = document.createElement("h5");
     var city = cityInputEl.value.trim();
 
     if (!searchHistoryArr.includes(city)) {
         pastSearch.setAttribute("data-city", city);
 
-        pastSearch.textContent = city;
+        pastSearch.textContent = city.toUpperCase();
 
         searchHistoryEl.appendChild(pastSearch);
     };
