@@ -68,6 +68,7 @@ var displayCurrentConditions = function(data) {
     currentConditionsStats.appendChild(windSpeed);
 
     currentConditionsEl.appendChild(currentConditionsStats);
+    currentConditionsEl.classList = "p-2 border border-secondary rounded";
 };
 
 var displayCurrentUv = function(data) {
@@ -91,11 +92,10 @@ var displayCurrentUv = function(data) {
 var displayForecast = function(data) {
     forecastEl.textContent = "";
     var desiredObject = 6;
-    console.log(data);
 
     for (var i = 0; i < 5; i++) {
         var forecastCard = document.createElement("div");
-        forecastCard.classList = "card col-12 col-md-2 bg-primary mx-3";
+        forecastCard.classList = "card col-4 col-md-2 bg-primary mx-3 my-3";
 
         var time = moment.unix(data.list[desiredObject].dt).format("ddd, MMMM Do, YYYY");
         var weatherIcon = document.createElement("img");
